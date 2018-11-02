@@ -5,6 +5,7 @@
 #include "tc_common.h"
 #include "uart_drv.h"
 #include "datalink_drv.h"
+#include "buzzer_drv.h"
 
 OS_MUTEX	TX_MUTEX;		//uart tx mutex
 OS_MUTEX	RX_MUTEX;		//uart rx mutex
@@ -192,6 +193,7 @@ STATIC void app_task_start(void *p_arg)
         //tc_run_all();
         //MSG("----------------loop-----------------\r\n");
         LED_R_TOGGLE;
+		buzzer(0);
 		//check 4G datalink connect state
 		datalink_state();
 		//handle uart received data

@@ -8,6 +8,7 @@
 #include "button_drv.h"
 #include "led_drv.h"
 #include "pwm_drv.h"
+#include "buzzer_drv.h"
 
 #define ADC_COMPENSATE	(3.304f/3.274f)   //发送端(3.276v)和接收端(3.304v)的adc参考电压不一致，需要做补偿
 #define TX_HEAD	0xAA
@@ -18,12 +19,14 @@ u8 tx_buf[MAX_PACKETSIZE]={0};
 
 static vu8 stamp=0;
 bool connected=FALSE;
+static bool connected_state=FALSE;	//是否连接过
 extern FIFO_T stFiFo;
 
 void datalink_recv(void)
 {
 	//u8 data_len=0;
 	u8 read;
+	static u8 buzzer_count=0;
 	//u8 i=0;
 	
 	if(Fifo_DataLen(&stFiFo))
@@ -39,6 +42,16 @@ void datalink_recv(void)
 							//	Fifo_Read(&stFiFo,&read);
 							stamp = 25;
 							connected= TRUE;
+							if(connected_state == FALSE ){
+								//connected_state = TRUE;
+								if(buzzer_count < 4){
+									buzzer(1);
+									buzzer_count++;
+								}else{
+									connected_state = TRUE;
+									buzzer_count=0;
+								}
+							}
 							LED_W_ON;
 						}
 					}
@@ -206,11 +219,23 @@ void datalink_send(void)
 
 void datalink_state(void)
 {
+	u8 buzzer_rate=0;	//蜂鸣器频率控制标志位，时基100ms
+	
 	if(stamp > 0){
 		stamp --;
 	}else{
 		connected = FALSE;
 		LED_W_OFF;
+	}
+
+	if(connected == FALSE && connected_state == TRUE)
+	{
+		buzzer_rate++;
+		if(buzzer_rate == 20)
+		{
+			buzzer(1);
+			buzzer_rate = 0;
+		}
 	}
 }
 
