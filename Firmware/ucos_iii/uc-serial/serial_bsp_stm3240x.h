@@ -62,8 +62,8 @@
 extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART1;
 extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART2;
 extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART3;
-extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_UART4;
-extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_UART5;
+extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART4;
+extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART5;
 extern  SERIAL_DEV_CFG  SerialDevCfg_STM32_USART6;
 
 /*$PAGE*/

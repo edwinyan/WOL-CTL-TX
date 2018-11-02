@@ -6,6 +6,9 @@
 #include "uart_drv.h"
 
 extern OS_MUTEX	FIFO_MUTEX;
+extern OS_MUTEX	TX_MUTEX;		//uart tx mutex
+extern OS_MUTEX	RX_MUTEX;		//uart rx mutex
+
 
 enum{
     UART_PIN_TYPE_TX = 0,
@@ -106,35 +109,24 @@ void uart_drv_init(void)
             break;
         }
     }
-#if 0
-    uart_drv = &uart_drv_array[UART_SRC_DBG];
-    ASSERT_R(DEF_TRUE == uart_drv->uart_enabled);
-    
-    Serial_SetLineDrv((SERIAL_IF_NBR        ) uart_drv->uart_if_nbr,
-                      (SERIAL_LINE_DRV_API *)&SerialLine_TTY ,
-                      (SERIAL_ERR          *)&err);
-    
-    Serial_Wr((SERIAL_IF_NBR   )uart_drv->uart_if_nbr,
-              (void           *)"\n\n",
-              (CPU_SIZE_T      )2,
-              (CPU_INT32U      )0,
-              (SERIAL_ERR     *)&err);
-    
-    ASSERT_R(err == SERIAL_ERR_NONE);
-#endif
 }
 
-void uart_drv_dbg_msg(u8 *msg)
+void uart_drv_dbg_msg(u8 *msg,u32 len)
 {
     SERIAL_ERR  err;
+	OS_ERR      Err;
+	
     uart_drv_t *uart_drv = &uart_drv_array[UART_SRC_DBG];
     ASSERT_R(DEF_TRUE == uart_drv->uart_enabled);
-    
+
+	OSMutexPend (&TX_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&Err);
     Serial_Wr((SERIAL_IF_NBR   )uart_drv->uart_if_nbr,
               (void           *)&msg[0],
-              (CPU_SIZE_T      )Str_Len((const CPU_CHAR *)msg),
+              (CPU_SIZE_T      )len,
               (CPU_INT32U      )0,
               (SERIAL_ERR     *)&err);
+	OSMutexPost(&TX_MUTEX,OS_OPT_POST_NONE,&Err);
+	
     ASSERT_R(err == SERIAL_ERR_NONE);
 }
 
@@ -142,15 +134,19 @@ u32 uart_drv_dbg_recv(u8 *buf, u32 len)
 {
     u32 read_len;
     SERIAL_ERR  err;
+	OS_ERR      Err;
+	
     uart_drv_t *uart_drv = &uart_drv_array[UART_SRC_DBG];
     ASSERT_R(DEF_TRUE == uart_drv->uart_enabled);
-    
+
+	OSMutexPend (&RX_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&Err);
     read_len = Serial_Rd((SERIAL_IF_NBR   )uart_drv->uart_if_nbr,
               (void           *)buf,
               (CPU_SIZE_T      )len,
               (CPU_INT32U      )0,
               (SERIAL_ERR     *)&err);
-   
+   	OSMutexPost(&RX_MUTEX,OS_OPT_POST_NONE,&Err);
+	
     if(err != SERIAL_ERR_NONE)
     {
         MSG_INFO("%s err: status: 0x%x, len: 0x%x\r\n", __FUNCTION__,err,len);

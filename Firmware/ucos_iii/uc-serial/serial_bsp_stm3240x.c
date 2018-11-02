@@ -273,8 +273,7 @@ static  void  SerialBSP_STM32_USART2_ClkEn (SERIAL_ERR  *perr)
 
 static  void  SerialBSP_STM32_USART3_ClkEn (SERIAL_ERR  *perr)
 {
-    BSP_PeriphEn(BSP_PERIPH_ID_GPIOC);                          /* Enable GPIOC clock.                                  */
-    BSP_PeriphEn(BSP_PERIPH_ID_USART3);                         /* Enable UART clock.                                   */
+	*perr = SERIAL_ERR_NONE;
 }
 
 static  void  SerialBSP_STM32_USART4_ClkEn (SERIAL_ERR  *perr)
@@ -324,8 +323,6 @@ static  void  SerialBSP_STM32_USART2_ClkDis (SERIAL_ERR  *perr)
 
 static  void  SerialBSP_STM32_USART3_ClkDis (SERIAL_ERR  *perr)
 {
-    BSP_PeriphDis(BSP_PERIPH_ID_USART3);                        /* Disable UART clock.                                   */
-    
    *perr = SERIAL_ERR_NONE;
 }
 
@@ -391,29 +388,11 @@ static  void  SerialBSP_STM32_USART2_CfgGPIO (CPU_BOOLEAN   flow_ctrl,
 static  void  SerialBSP_STM32_USART3_CfgGPIO (CPU_BOOLEAN   flow_ctrl,
                                               SERIAL_ERR   *perr)
 {
-    GPIO_InitTypeDef  GPIO_InitStructure;
-
-    
     if (flow_ctrl == DEF_ENABLED) {
         *perr = SERIAL_ERR_DRV_INVALID;
          return;
     }
     
-                                                                /* Configure GPIOC.10 as push-pull.                     */
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
-    GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_USART3);
-
-                                                                /* Configure GPIOC.11 as input floating.                 */
-    GPIO_InitStructure.GPIO_Pin   = GPIO_Pin_11;
-    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
-    GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_USART3);    
-
    *perr = SERIAL_ERR_NONE;
 }
 

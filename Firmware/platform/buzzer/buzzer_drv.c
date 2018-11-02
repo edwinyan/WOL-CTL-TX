@@ -11,7 +11,7 @@ typedef struct{
 
 
 STATIC buzzer_config_t buzzer_config_array[BUZZER_SRC_NUM] = {
-    {GPIOA, GPIO_Pin_11},       
+    {BUZZER_GPIO, BUZZER_PIN},       
 };
 
 

@@ -127,10 +127,6 @@ void BSP_Peripheral_Init(void)
 	button_drv_init();
 	buzzer_drv_init();
 	Adc_Init();
-	gpio_drv_init(); //config gpio for output
-	TIM3_PWM_Init(4095,7);  //TIM3 for adc2,3,4,5
-	TIM5_PWM_Init(4095,7); //pwm frequency=1M/409 = 2.439KHz
-		
 }
 
 /*

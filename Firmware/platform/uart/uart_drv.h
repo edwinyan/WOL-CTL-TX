@@ -19,7 +19,7 @@ typedef struct {
  }FIFO_T, *pFIFO_T;
 
 void uart_drv_init(void);
-void uart_drv_dbg_msg(u8 *msg);
+void uart_drv_dbg_msg(u8 *msg,u32 len);
 u32 uart_drv_dbg_recv(u8 *buf, u32 len);
 
 void Fifo_Init(pFIFO_T stFiFo);
