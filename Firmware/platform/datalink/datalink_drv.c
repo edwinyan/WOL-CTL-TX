@@ -219,7 +219,7 @@ void datalink_send(void)
 
 void datalink_state(void)
 {
-	u8 buzzer_rate=0;	//蜂鸣器频率控制标志位，时基100ms
+	static u8 buzzer_rate=0;	//蜂鸣器频率控制标志位，时基100ms
 	
 	if(stamp > 0){
 		stamp --;
