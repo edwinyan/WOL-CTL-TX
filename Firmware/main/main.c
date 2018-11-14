@@ -6,6 +6,7 @@
 #include "uart_drv.h"
 #include "datalink_drv.h"
 #include "buzzer_drv.h"
+#include "tx.h"
 
 OS_MUTEX	TX_MUTEX;		//uart tx mutex
 OS_MUTEX	RX_MUTEX;		//uart rx mutex
@@ -50,9 +51,12 @@ STATIC void app_rfm_tx_task(void *p_arg)
 	
 	MSG("Creating Application Tasks: %d\r\n",__FPU_USED);
 
+	TXsetup();
+
 	while (DEF_TRUE) 
     {   
-		OSTimeDlyHMSM(0, 0, 1, 0, OS_OPT_TIME_HMSM_STRICT, &err);
+    	TXloop();
+		OSTimeDlyHMSM(0, 0, 0, 2, OS_OPT_TIME_HMSM_STRICT, &err);
     }
 }
 
