@@ -17,7 +17,7 @@
 #include "led_drv.h"
 #include "uart_drv.h"
 #include "button_drv.h"
-//#include "rfm_drv.h"
+#include "rfm_drv.h"
 //#include "binding.h"
 #include "buzzer_drv.h"
 #include "adc_drv.h"
@@ -123,6 +123,7 @@ void  BSP_Init (void)
 void BSP_Peripheral_Init(void)
 {
     led_drv_init();
+	rfm_preinit();
     uart_drv_init();
 	button_drv_init();
 	buzzer_drv_init();
