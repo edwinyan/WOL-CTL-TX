@@ -125,7 +125,7 @@ typedef enum {
 #define BINDING_POWER     0x06 // not lowest since may result fail with RFM23BP
 
 #define TELEMETRY_PACKETSIZE 9
-#define MAX_PACKETSIZE 16		//we use 16bytes for TX module send buffer
+#define MAX_PACKETSIZE 18		//we use 16bytes for TX module send buffer
 
 #define BIND_MAGIC (0xDEC1BE15 + (OPENLRSNG_VERSION & 0xfff0))
 #define BINDING_VERSION ((OPENLRSNG_VERSION & 0x0ff0)>>4)

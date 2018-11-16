@@ -9,11 +9,11 @@
 #include "led_drv.h"
 #include "pwm_drv.h"
 #include "buzzer_drv.h"
+#include "binding.h"
 
 #define ADC_COMPENSATE	(3.304f/3.274f)   //发送端(3.276v)和接收端(3.304v)的adc参考电压不一致，需要做补偿
 #define TX_HEAD	0xAA
 #define TX_TAIL	0x55
-#define MAX_PACKETSIZE 16		//we use 16bytes for TX module send buffer
 
 u8 tx_buf[MAX_PACKETSIZE]={0};
 
@@ -21,6 +21,10 @@ static vu8 stamp=0;
 bool connected=FALSE;
 static bool connected_state=FALSE;	//是否连接过
 extern FIFO_T stFiFo;
+extern u8 LinkQualityRX;
+extern u8 module_index;
+
+extern OS_MUTEX	PACKET_MUTEX;
 
 void datalink_recv(void)
 {
@@ -158,14 +162,12 @@ u8 checkbufferdata(u8 *data,u8 size)
 }
 
 
-void packChannels(void)
+void packChannels(u8 index)
 {
-	u32 counter;
+	//u32 counter;
 	u16 adcTemp[5];
-//	u8 *temp;
-
-	static u8 number=0;
-	
+	static u8 number_433m=0;
+	static u8 number_4g=0;
 
 	adcTemp[ADC_CHANNEL_CAMERA] = (4095 - adc_getvalue(ADC_CHANNEL_CAMERA))*ADC_COMPENSATE;
 	adcTemp[ADC_CHANNEL_JS_R1] = (4095- adc_getvalue(ADC_CHANNEL_JS_R1))*ADC_COMPENSATE;
@@ -198,29 +200,48 @@ void packChannels(void)
 	tx_buf[10] = adcTemp[ADC_CHANNEL_JS_L2];
 	tx_buf[11] = getLB2Values(1);
 	tx_buf[12] = getLB2Values(0);
-	tx_buf[13] = number++; //发送数据包序号
-	tx_buf[14] = checkbufferdata(tx_buf,13);
-	tx_buf[MAX_PACKETSIZE-1] = TX_TAIL;
-	#if 1
-	for(counter=0;counter<MAX_PACKETSIZE;counter++){
-		if(tx_buf[counter] == 0x0A)
-			tx_buf[counter] = 0xFF - tx_buf[counter];
+	tx_buf[13] = module_index;
+	tx_buf[14] = 0x00;
+	if(index == MODULE_TYPE_4G){
+		tx_buf[15] = number_4g++; //发送数据包序号
+	}else{
+		tx_buf[15] = number_433m++; //发送数据包序号
 	}
-	//MSG("\r\n");
-	#endif
+	tx_buf[16] = checkbufferdata(tx_buf,15);
+	tx_buf[MAX_PACKETSIZE-1] = TX_TAIL;
+
 }
 
 
 void datalink_send(void)
 {
-	packChannels();
+	OS_ERR  err;
+	
+	OSMutexPend(&PACKET_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&err);
+	packChannels(1);
+	OSMutexPost(&PACKET_MUTEX,OS_OPT_POST_NONE,&err);
+	
 	uart_drv_dbg_msg(tx_buf,MAX_PACKETSIZE);
 }
 
 void datalink_state(void)
 {
 	static u8 buzzer_rate=0;	//蜂鸣器频率控制标志位，时基100ms
+	static u8 counter=0;
+	static u8 recovery=0;
 	
+	#if 1
+    //MSG("LinkQualityRX= %d,module_index=%d\r\n",LinkQualityRX,module_index);
+	//setup a led for system status display
+	if(module_index == MODULE_TYPE_433M){
+		LED_B_TOGGLE;
+		LED_R_OFF;
+	}else if(module_index == MODULE_TYPE_4G){
+		LED_B_OFF;
+		LED_R_TOGGLE;
+	}
+	#endif
+		
 	if(stamp > 0){
 		stamp --;
 	}else{
@@ -228,6 +249,28 @@ void datalink_state(void)
 		LED_W_OFF;
 	}
 
+	//433M 模块信号质量指示标志位，最大15，最小0
+	if(LinkQualityRX < 10){
+		counter++;
+	}else{
+		counter=0;
+	}
+	if(LinkQualityRX > 12){
+		recovery++;
+	}else{
+		recovery=0;
+	}
+	
+	//当433M信号质量太差时切换到4G
+	if(module_index == MODULE_TYPE_433M && counter > 10 && connected == TRUE){
+		module_index = MODULE_TYPE_4G;
+	}
+	//当433M信号恢复强度以后，重新切换到433M
+	if(module_index == MODULE_TYPE_4G && recovery > 10){
+		module_index = MODULE_TYPE_433M;
+	}
+	
+	//信号连接掉线，蜂鸣器工作
 	if(connected == FALSE && connected_state == TRUE)
 	{
 		buzzer_rate++;

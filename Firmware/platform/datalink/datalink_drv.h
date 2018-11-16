@@ -21,6 +21,6 @@ void datalink_recv(void);
 void datalink_send(void);
 void datalink_state(void);
 u8 checkbufferdata(u8 *data,u8 size);
-void packChannels(void);
+void packChannels(u8 index);
 
 #endif

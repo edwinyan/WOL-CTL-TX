@@ -49,6 +49,8 @@ u8 rx_buf[TELEMETRY_PACKETSIZE];
 #define ADC_COMPENSATE	(3.304f/3.274f)   //发送端(3.276v)和接收端(3.304v)的adc参考电压不一致，需要做补偿
 
 extern u8 tx_buf[MAX_PACKETSIZE];
+extern OS_MUTEX	PACKET_MUTEX;
+
 /*----------------------------------------------------------------------------*/
 
 void swap(u8 *a, u8 i, u8 j)
@@ -325,7 +327,7 @@ void TXloop(void)
 {
 	OS_ERR  err;
 	u32 time=0;
-	u8 i=0;
+	//u8 i=0;
 	//static u8 number=0;
 	//static u8 pre_number=0;
 	//u32 timestamp;
@@ -400,7 +402,9 @@ void TXloop(void)
         	}
       	}
 		//MSG("pack start %d\r\n",OSTimeGet(&err));
-		packChannels();
+		OSMutexPend(&PACKET_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&err);
+		packChannels(0);
+		OSMutexPost(&PACKET_MUTEX,OS_OPT_POST_NONE,&err);
 		//MSG("pack end %d\r\n",OSTimeGet(&err));
 		LED_W_ON;
 

@@ -12,9 +12,13 @@ OS_MUTEX	TX_MUTEX;		//uart tx mutex
 OS_MUTEX	RX_MUTEX;		//uart rx mutex
 
 OS_MUTEX	FIFO_MUTEX;
+OS_MUTEX	PACKET_MUTEX;
 
 FIFO_T stFiFo;
 extern bool connected;
+
+u8 module_index=MODULE_TYPE_4G;
+
 /*----------------------------------------------------------------------------*/
 //macro and variables
 #define  APP_CFG_TASK_START_STK_SIZE                    256u
@@ -182,6 +186,9 @@ STATIC void app_task_start(void *p_arg)
     MSG("Creating Application Tasks: %d\r\n",__FPU_USED);
 	OSMutexCreate((OS_MUTEX*	)&FIFO_MUTEX,
 				  (CPU_CHAR*	)"UART FIFO_MUTEX",
+				  (OS_ERR*		)&err);
+	OSMutexCreate((OS_MUTEX*	)&PACKET_MUTEX,
+				  (CPU_CHAR*	)"UART RECEIVE_MUTEX",
 				  (OS_ERR*		)&err);
 	OSMutexCreate((OS_MUTEX*	)&TX_MUTEX,
 				  (CPU_CHAR*	)"UART TX_MUTEX",

@@ -24,6 +24,8 @@
 //platform
 #include "stm32f4xx.h"
 
+#define MODULE_TYPE_433M	0
+#define MODULE_TYPE_4G		1
 
 
 //misc
