@@ -14,7 +14,7 @@ OS_MUTEX	RX_MUTEX;		//uart rx mutex
 OS_MUTEX	FIFO_MUTEX;
 OS_MUTEX	PACKET_MUTEX;
 
-FIFO_T stFiFo;
+//FIFO_T stFiFo;
 extern bool connected;
 
 u8 module_index=MODULE_TYPE_4G;
@@ -47,6 +47,8 @@ static  CPU_STK  app_datalink_task_stk[APP_DATALINK_TASK_STK_SIZE];
 
 /*----------------------------------------------------------------------------*/
 //local function
+#if 0
+
 STATIC void app_rfm_tx_task(void *p_arg)
 {
 	OS_ERR      err;
@@ -88,7 +90,7 @@ STATIC void app_uart_task(void *p_arg)
 		OSTimeDlyHMSM(0, 0, 0, 3, OS_OPT_TIME_HMSM_STRICT, &err);
     }
 }
-
+#endif
 STATIC void app_datalink_task(void *p_arg)
 {
 	OS_ERR      err;
@@ -111,7 +113,7 @@ STATIC void app_task_create(void)
 {
 
 	OS_ERR      err;
-#if 1	
+#if 0	
     OSTaskCreate((OS_TCB       *)&app_tx_task_tcb,              
                  (CPU_CHAR     *)"App rmf tx Task",
                  (OS_TASK_PTR   )app_rfm_tx_task, 
@@ -126,7 +128,7 @@ STATIC void app_task_create(void)
                  (OS_OPT        )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                  (OS_ERR       *)&err);
 #endif
-
+#if 0
 	OSTaskCreate((OS_TCB	   *)&app_uart_task_tcb,			  
 				 (CPU_CHAR	   *)"App uart Task",
 				 (OS_TASK_PTR	)app_uart_task, 
@@ -140,7 +142,7 @@ STATIC void app_task_create(void)
 				 (void		   *)0,
 				 (OS_OPT		)(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
 				 (OS_ERR	   *)&err);
-
+#endif
 	OSTaskCreate((OS_TCB	   *)&app_datalink_task_tcb,			  
 				 (CPU_CHAR	   *)"App datalink Task",
 				 (OS_TASK_PTR	)app_datalink_task, 

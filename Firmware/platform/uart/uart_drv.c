@@ -4,11 +4,14 @@
 #include "serial_bsp_stm3240x.h"
 #include "serial_line_tty.h"
 #include "uart_drv.h"
+#include "bsp_os.h"
+#include "bsp.h"
 
 extern OS_MUTEX	FIFO_MUTEX;
 extern OS_MUTEX	TX_MUTEX;		//uart tx mutex
 extern OS_MUTEX	RX_MUTEX;		//uart rx mutex
 
+FIFO_T stFiFo;
 
 enum{
     UART_PIN_TYPE_TX = 0,
@@ -46,6 +49,17 @@ uart_drv_t uart_drv_array[UART_SRC_NUM] = {
     },
 };
 
+void USART1_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(USART1));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
 
 
 void uart_drv_init(void)
@@ -54,6 +68,7 @@ void uart_drv_init(void)
     SERIAL_ERR     err;
     uart_drv_t     *uart_drv;
     GPIO_InitTypeDef  GPIO_InitStructure;
+	USART_InitTypeDef USART_InitStructure;
 
     //gpio config
     GPIO_StructInit(&GPIO_InitStructure);
@@ -64,7 +79,8 @@ void uart_drv_init(void)
     
     
     //serial init
-    Serial_Init(); 
+    //Serial_Init(); 
+    Fifo_Init(&stFiFo);
     
     for(src = UART_SRC_START; src < UART_SRC_NUM; src++)
     {
@@ -80,7 +96,7 @@ void uart_drv_init(void)
             GPIO_InitStructure.GPIO_Pin = uart_drv->pin[UART_PIN_TYPE_RX];
             GPIO_Init(uart_drv->port[UART_PIN_TYPE_RX], &GPIO_InitStructure);
 
-    
+    	#if 0
             Serial_DevDrvAdd((CPU_CHAR       *)uart_drv->uart_name,     
                      (SERIAL_DEV_CFG *) uart_drv->uart_dev_cfg,
                      (CPU_SIZE_T      ) 52u,
@@ -103,6 +119,21 @@ void uart_drv_init(void)
             }
             
             uart_drv->uart_enabled = DEF_TRUE;
+		#else
+			USART_InitStructure.USART_BaudRate = uart_drv->uart_if_cfg.Baudrate;//一般设置为9600; 
+			USART_InitStructure.USART_WordLength = uart_drv->uart_if_cfg.DataBits;//字长为8位数据格式 
+			USART_InitStructure.USART_StopBits = uart_drv->uart_if_cfg.StopBits;//一个停止位 
+			USART_InitStructure.USART_Parity = uart_drv->uart_if_cfg.Parity;//无奇偶校验位 
+			USART_InitStructure.USART_HardwareFlowControl = uart_drv->uart_if_cfg.FlowCtrl;//无硬件数据流控制 
+			USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; //收发模式 
+			USART_Init(USART1, &USART_InitStructure); //初始化串口 
+
+			USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+			BSP_IntVectSet(BSP_INT_ID_USART1, USART1_IRQHandler); //设置串口1的中断向量
+			BSP_IntEn(BSP_INT_ID_USART1);
+
+			USART_Cmd(USART1, ENABLE);                //使能串口
+		#endif
         }
         else
         {
