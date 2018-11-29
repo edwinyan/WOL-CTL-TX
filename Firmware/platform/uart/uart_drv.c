@@ -65,7 +65,7 @@ void USART1_IRQHandler(void)
 void uart_drv_init(void)
 {
     uart_src_enum src;
-    SERIAL_ERR     err;
+//    SERIAL_ERR     err;
     uart_drv_t     *uart_drv;
     GPIO_InitTypeDef  GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
@@ -133,6 +133,7 @@ void uart_drv_init(void)
 			BSP_IntEn(BSP_INT_ID_USART1);
 
 			USART_Cmd(USART1, ENABLE);                //Ê¹ÄÜ´®¿Ú
+
 		#endif
         }
         else
@@ -142,6 +143,7 @@ void uart_drv_init(void)
     }
 }
 
+#if 0
 void uart_drv_dbg_msg(u8 *msg,u32 len)
 {
     SERIAL_ERR  err;
@@ -186,7 +188,7 @@ u32 uart_drv_dbg_recv(u8 *buf, u32 len)
     
     return read_len;
 }
-
+#endif
 void Fifo_Init(pFIFO_T stFiFo)
 {
 	stFiFo->r_idx = 0;
@@ -258,5 +260,38 @@ u8 Fifo_DataLen(pFIFO_T stFiFo)
 	OSMutexPost(&FIFO_MUTEX,OS_OPT_POST_NONE,&err);
 	return len;
 }
+
+void uart_drv_dbg_msg(u8 *msg)
+{
+	OS_ERR      err;
+	
+	OSMutexPend (&TX_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&err);
+	
+	while(*msg)
+	{
+		while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);          
+    		USART_SendData(USART1, *msg );
+		msg ++;
+	}
+
+	OSMutexPost(&TX_MUTEX,OS_OPT_POST_NONE,&err);
+}
+
+void uart_drv_dbg_send(u8 *msg,u32 len)
+{
+	OS_ERR      err;
+	
+	OSMutexPend (&TX_MUTEX,0,OS_OPT_PEND_BLOCKING,0,&err);
+	
+	while(len--)
+	{
+		while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);          
+    		USART_SendData(USART1, *msg );
+		msg ++;
+	}
+
+	OSMutexPost(&TX_MUTEX,OS_OPT_POST_NONE,&err);
+}
+
 
 

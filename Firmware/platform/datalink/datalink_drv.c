@@ -221,7 +221,7 @@ void datalink_send(void)
 	packChannels(1);
 	OSMutexPost(&PACKET_MUTEX,OS_OPT_POST_NONE,&err);
 	
-	uart_drv_dbg_msg(tx_buf,MAX_PACKETSIZE);
+	uart_drv_dbg_send(tx_buf,MAX_PACKETSIZE);
 }
 
 void datalink_state(void)

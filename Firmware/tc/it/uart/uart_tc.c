@@ -23,21 +23,21 @@ STATIC void uart_tc_01(void)
 
 STATIC void uart_tc_02(void)
 {   
-    u8 read;
+//    u8 read;
     
-    tc_printf_banner("Uart Dbg echo test (Press 'Q' to exit) ");
-    while(1)
-    {
-        if(1 == uart_drv_dbg_recv(&read,2))
-        {
-            MSG("%c",read);
-            if('Q' == read)
-            {
-                break;
-            }
-        }
-    }
-    tc_printf_tail("Uart Dbg echo test ");
+//    tc_printf_banner("Uart Dbg echo test (Press 'Q' to exit) ");
+//    while(1)
+//    {
+//        if(1 == uart_drv_dbg_recv(&read,2))
+//        {
+//            MSG("%c",read);
+//            if('Q' == read)
+//            {
+//                break;
+//            }
+//        }
+//    }
+//    tc_printf_tail("Uart Dbg echo test ");
 }
 
 STATIC void uart_tc_03(void)

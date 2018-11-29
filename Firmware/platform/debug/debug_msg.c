@@ -11,5 +11,5 @@ void debug_msg_printf(CPU_CHAR *format, ...)
     vsprintf((char       *)msg_buf,(char const *)format,vArgs);
     va_end(vArgs);
 
-    //uart_drv_dbg_msg(msg_buf);        
+    uart_drv_dbg_msg(msg_buf);        
 }
