@@ -169,7 +169,7 @@ void packChannels(u8 index)
 	static u8 number_433m=0;
 	static u8 number_4g=0;
 
-	adcTemp[ADC_CHANNEL_CAMERA] = (4095 - adc_getvalue(ADC_CHANNEL_CAMERA))*ADC_COMPENSATE;
+	adcTemp[ADC_CHANNEL_CAMERA] = (4095 - adc_getvalue(ADC_CHANNEL_CAMERA) - 50)*ADC_COMPENSATE;
 	adcTemp[ADC_CHANNEL_JS_R1] = (4095- adc_getvalue(ADC_CHANNEL_JS_R1))*ADC_COMPENSATE;
 	adcTemp[ADC_CHANNEL_JS_R2] = (4095 - adc_getvalue(ADC_CHANNEL_JS_R2))*ADC_COMPENSATE;
 	adcTemp[ADC_CHANNEL_JS_L1] = (4095 - adc_getvalue(ADC_CHANNEL_JS_L1))*ADC_COMPENSATE;

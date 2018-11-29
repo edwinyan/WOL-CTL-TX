@@ -22,6 +22,7 @@ enum{
 
 typedef struct{
     char            *uart_name;
+	USART_TypeDef	*USARTx;
     SERIAL_DEV_CFG  *uart_dev_cfg;
     struct  serial_if_cfg uart_if_cfg;
     SERIAL_IF_NBR   uart_if_nbr;    
@@ -36,14 +37,14 @@ typedef struct{
 uart_drv_t uart_drv_array[UART_SRC_NUM] = {
     //uart1 for debug
     { 
-        "USART1", &SerialDevCfg_STM32_USART1, 
+        "USART1", USART1,&SerialDevCfg_STM32_USART1, 
         {SERIAL_BAUDRATE_115200, SERIAL_DATABITS_8, SERIAL_STOPBITS_1, SERIAL_PARITY_NONE, SERIAL_FLOW_CTRL_NONE}, 
         0,{GPIOA, GPIOA},{GPIO_Pin_9,GPIO_Pin_10}, {GPIO_PinSource9, GPIO_PinSource10},GPIO_AF_USART1,DEF_FALSE
     },
 
     //endmark
     { 
-        "", NULL, 
+        "", NULL, NULL,
         {SERIAL_BAUDRATE_115200, SERIAL_DATABITS_8, SERIAL_STOPBITS_1, SERIAL_PARITY_NONE, SERIAL_FLOW_CTRL_NONE}, 
         0,{GPIOA, GPIOA},{GPIO_Pin_9,GPIO_Pin_10}, {GPIO_PinSource9, GPIO_PinSource10},GPIO_AF_USART1,DEF_FALSE
     },
@@ -61,6 +62,96 @@ void USART1_IRQHandler(void)
 	OSIntExit(); 
 }
 
+void USART2_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(USART2));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
+
+void USART3_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(USART3,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(USART3));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
+
+void USART4_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(UART4,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(UART4));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
+
+void USART5_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(UART5));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
+
+void USART6_IRQHandler(void)
+{
+	OSIntEnter();
+	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)    //进中断的标志
+	{
+		USART_ClearITPendingBit(USART6,USART_IT_RXNE);
+		Fifo_Write(&stFiFo,USART_ReceiveData(USART6));
+		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
+	}
+	OSIntExit(); 
+}
+
+void USART_IRQInit(USART_TypeDef* USARTx)
+{
+	if(USARTx == USART1)
+	{
+		USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART1, USART1_IRQHandler); //设置串口1的中断向量
+		BSP_IntEn(BSP_INT_ID_USART1);
+	}else if(USARTx == USART2){
+		USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART2, USART2_IRQHandler); //设置串口2的中断向量
+		BSP_IntEn(BSP_INT_ID_USART2);
+	}else if(USARTx == USART3){
+		USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART3, USART3_IRQHandler); //设置串口3的中断向量
+		BSP_IntEn(BSP_INT_ID_USART3);
+	}else if(USARTx == UART4){
+		USART_ITConfig(UART4, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART4, USART4_IRQHandler); //设置串口4的中断向量
+		BSP_IntEn(BSP_INT_ID_USART4);
+	}else if(USARTx == UART5){
+		USART_ITConfig(UART5, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART5, USART5_IRQHandler); //设置串口5的中断向量
+		BSP_IntEn(BSP_INT_ID_USART5);
+	}else if(USARTx == USART6){
+		USART_ITConfig(USART6, USART_IT_RXNE, ENABLE);
+		BSP_IntVectSet(BSP_INT_ID_USART6, USART6_IRQHandler); //设置串口6的中断向量
+		BSP_IntEn(BSP_INT_ID_USART6);
+	}
+	
+}
 
 void uart_drv_init(void)
 {
@@ -126,13 +217,11 @@ void uart_drv_init(void)
 			USART_InitStructure.USART_Parity = uart_drv->uart_if_cfg.Parity;//无奇偶校验位 
 			USART_InitStructure.USART_HardwareFlowControl = uart_drv->uart_if_cfg.FlowCtrl;//无硬件数据流控制 
 			USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; //收发模式 
-			USART_Init(USART1, &USART_InitStructure); //初始化串口 
+			USART_Init(uart_drv->USARTx, &USART_InitStructure); //初始化串口 
 
-			USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-			BSP_IntVectSet(BSP_INT_ID_USART1, USART1_IRQHandler); //设置串口1的中断向量
-			BSP_IntEn(BSP_INT_ID_USART1);
+			USART_IRQInit(uart_drv->USARTx);
 
-			USART_Cmd(USART1, ENABLE);                //使能串口
+			USART_Cmd(uart_drv->USARTx, ENABLE);                //使能串口
 
 		#endif
         }

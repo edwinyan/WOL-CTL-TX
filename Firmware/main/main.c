@@ -102,9 +102,9 @@ STATIC void app_datalink_task(void *p_arg)
     	//LED_W_ON;
     	//OSTimeDlyHMSM(0, 0, 0, 300, OS_OPT_TIME_HMSM_STRICT, &err);
 		//LED_W_OFF;
-		if(connected){
+		//if(connected){
 			datalink_send();
-		}
+		//}
 		OSTimeDlyHMSM(0, 0, 0, 150, OS_OPT_TIME_HMSM_STRICT, &err);
     }
 }
