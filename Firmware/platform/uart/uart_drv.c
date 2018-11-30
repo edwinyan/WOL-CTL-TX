@@ -176,6 +176,7 @@ void uart_drv_init(void)
     for(src = UART_SRC_START; src < UART_SRC_NUM; src++)
     {
         uart_drv = &uart_drv_array[src];
+		//Fifo_Init(&stFiFo);
         
         if(Str_Len(uart_drv->uart_name))
         {
