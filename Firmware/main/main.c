@@ -47,7 +47,7 @@ static  CPU_STK  app_datalink_task_stk[APP_DATALINK_TASK_STK_SIZE];
 
 /*----------------------------------------------------------------------------*/
 //local function
-#if 0
+
 
 STATIC void app_rfm_tx_task(void *p_arg)
 {
@@ -65,6 +65,7 @@ STATIC void app_rfm_tx_task(void *p_arg)
 		OSTimeDlyHMSM(0, 0, 0, 2, OS_OPT_TIME_HMSM_STRICT, &err);
     }
 }
+#if 0
 
 STATIC void app_uart_task(void *p_arg)
 {

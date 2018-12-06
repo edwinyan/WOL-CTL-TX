@@ -21,12 +21,14 @@ STATIC button_config_t button_config_array[BUTTON_SRC_NUM] = {
 	{GPIOA, GPIO_Pin_2, GPIO_PuPd_UP},	//playback
 	{GPIOA, GPIO_Pin_4, GPIO_PuPd_UP},	//mode set 1
 	{GPIOA, GPIO_Pin_5, GPIO_PuPd_UP},	//mode set 2
-	{GPIOB, GPIO_Pin_15, GPIO_PuPd_UP},	//video button			
+	{GPIOB, GPIO_Pin_15, GPIO_PuPd_UP},	//video button
+
+	{GPIOA, GPIO_Pin_8, GPIO_PuPd_UP},	//power button
 	{GPIOB, GPIO_Pin_5, GPIO_PuPd_UP},	//return reserve 2
 	{GPIOB, GPIO_Pin_6, GPIO_PuPd_UP},	//return toggle
 	{GPIOB, GPIO_Pin_7, GPIO_PuPd_UP},	//return reserve 1
 	{GPIOB, GPIO_Pin_8, GPIO_PuPd_UP},	//return button
-	{GPIOA, GPIO_Pin_8, GPIO_PuPd_UP},	//power button
+	
 	
 };
 	

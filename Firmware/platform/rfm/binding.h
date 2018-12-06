@@ -202,7 +202,7 @@ struct Bind_data {
 //#define HOP_TIMEOUT		
 
 
-
+#if 0
 //output status of LB2 controller
 #define SHUTTLE_ADJ2		0x01
 #define SHUTTLE_ADJ1		0x02
@@ -221,7 +221,7 @@ struct Bind_data {
 
 #define RETURN_LED			0x01
 #define POWER_LED			0x02
-
+#endif
 struct rxSpecialPinMap {
   u8 output;
   u8 type;

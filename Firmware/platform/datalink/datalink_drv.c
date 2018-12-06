@@ -30,7 +30,7 @@ void datalink_recv(void)
 {
 	//u8 data_len=0;
 	u8 read;
-	static u8 buzzer_count=0;
+	//static u8 buzzer_count=0;
 	//u8 i=0;
 	
 	if(Fifo_DataLen(&stFiFo))
@@ -47,7 +47,9 @@ void datalink_recv(void)
 							stamp = 25;
 							connected= TRUE;
 							if(connected_state == FALSE ){
-								//connected_state = TRUE;
+								connected_state = TRUE;
+								//关闭连接成功以后的蜂鸣器响应
+								#if 0
 								if(buzzer_count < 4){
 									buzzer(1);
 									buzzer_count++;
@@ -55,6 +57,7 @@ void datalink_recv(void)
 									connected_state = TRUE;
 									buzzer_count=0;
 								}
+								#endif
 							}
 							LED_W_ON;
 						}
@@ -271,7 +274,7 @@ void datalink_state(void)
 	}
 	
 	//信号连接掉线，蜂鸣器工作
-	if(connected == FALSE && connected_state == TRUE)
+	if(connected == FALSE && connected_state == TRUE && module_index == MODULE_TYPE_4G)
 	{
 		buzzer_rate++;
 		if(buzzer_rate == 20)

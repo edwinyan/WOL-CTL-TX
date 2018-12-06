@@ -353,6 +353,7 @@ void TXloop(void)
 		{
 			//RSSI_rx = rx_buf[1];
 			LinkQualityRX = rx_buf[3];
+			#if 0
 			if(rx_buf[2]&RETURN_LED){
 				GPIO_SetBits(GPIOB, GPIO_Pin_9);
 			}else{
@@ -363,7 +364,7 @@ void TXloop(void)
 			}else{
 				GPIO_ResetBits(GPIOC, GPIO_Pin_9);
 			}
-			#if 0
+			
 			for(i=1;i<7;i++){
 				MSG("%d,",rx_buf[i]);
 			}

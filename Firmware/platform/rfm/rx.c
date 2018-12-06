@@ -248,7 +248,7 @@ void updateHopChannel(void)
 u8 getLedStatus(void)
 {
 	u8 ret=0;
-
+#if 0
 	if(button_value_get(BUTTON_SRC_POWER_CTRL1) == 1){
 		ret |= POWER_LED;
 	}else{
@@ -259,6 +259,7 @@ u8 getLedStatus(void)
 	}else{
 		ret &= ~RETURN_LED;
 	}
+#endif
 	return ret;
 }
 
