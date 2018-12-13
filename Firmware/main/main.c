@@ -24,8 +24,8 @@ u8 module_index=MODULE_TYPE_4G;
 #define  APP_CFG_TASK_START_STK_SIZE                    256u
 #define  APP_CFG_TASK_START_PRIO                        2u
 
-#define  APP_TX_TASK_STK_SIZE                    256u
-#define  APP_TX_TASK_PRIO                        3u
+//#define  APP_TX_TASK_STK_SIZE                    256u
+//#define  APP_TX_TASK_PRIO                        3u
 
 #define  APP_UART_TASK_STK_SIZE                    256u
 #define  APP_UART_TASK_PRIO                        4u
@@ -36,8 +36,8 @@ u8 module_index=MODULE_TYPE_4G;
 static  OS_TCB   app_task_start_tcb;
 static  CPU_STK  app_task_start_stk[APP_CFG_TASK_START_STK_SIZE];
 
-static  OS_TCB   app_tx_task_tcb;
-static  CPU_STK  app_tx_task_stk[APP_TX_TASK_STK_SIZE];
+//static  OS_TCB   app_tx_task_tcb;
+//static  CPU_STK  app_tx_task_stk[APP_TX_TASK_STK_SIZE];
 
 static  OS_TCB   app_uart_task_tcb;
 static  CPU_STK  app_uart_task_stk[APP_UART_TASK_STK_SIZE];
@@ -48,6 +48,7 @@ static  CPU_STK  app_datalink_task_stk[APP_DATALINK_TASK_STK_SIZE];
 /*----------------------------------------------------------------------------*/
 //local function
 
+#if 0
 
 STATIC void app_rfm_tx_task(void *p_arg)
 {
@@ -65,7 +66,7 @@ STATIC void app_rfm_tx_task(void *p_arg)
 		OSTimeDlyHMSM(0, 0, 0, 2, OS_OPT_TIME_HMSM_STRICT, &err);
     }
 }
-#if 0
+
 
 STATIC void app_uart_task(void *p_arg)
 {

@@ -11,7 +11,12 @@ extern OS_MUTEX	FIFO_MUTEX;
 extern OS_MUTEX	TX_MUTEX;		//uart tx mutex
 extern OS_MUTEX	RX_MUTEX;		//uart rx mutex
 
-FIFO_T stFiFo;
+FIFO_T stFiFo1;
+FIFO_T stFiFo2;
+FIFO_T stFiFo3;
+FIFO_T stFiFo4;
+FIFO_T stFiFo5;
+FIFO_T stFiFo6;
 
 enum{
     UART_PIN_TYPE_TX = 0,
@@ -56,7 +61,7 @@ void USART1_IRQHandler(void)
 	if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(USART1,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(USART1));
+		Fifo_Write(&stFiFo1,USART_ReceiveData(USART1));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
@@ -68,7 +73,7 @@ void USART2_IRQHandler(void)
 	if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(USART2,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(USART2));
+		Fifo_Write(&stFiFo2,USART_ReceiveData(USART2));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
@@ -80,7 +85,7 @@ void USART3_IRQHandler(void)
 	if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(USART3,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(USART3));
+		Fifo_Write(&stFiFo3,USART_ReceiveData(USART3));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
@@ -92,7 +97,7 @@ void USART4_IRQHandler(void)
 	if (USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(UART4,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(UART4));
+		Fifo_Write(&stFiFo4,USART_ReceiveData(UART4));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
@@ -104,7 +109,7 @@ void USART5_IRQHandler(void)
 	if (USART_GetITStatus(UART5, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(UART5,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(UART5));
+		Fifo_Write(&stFiFo5,USART_ReceiveData(UART5));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
@@ -116,7 +121,7 @@ void USART6_IRQHandler(void)
 	if (USART_GetITStatus(USART6, USART_IT_RXNE) != RESET)    //进中断的标志
 	{
 		USART_ClearITPendingBit(USART6,USART_IT_RXNE);
-		Fifo_Write(&stFiFo,USART_ReceiveData(USART6));
+		Fifo_Write(&stFiFo6,USART_ReceiveData(USART6));
 		//USART_SendData(USART1, USART_ReceiveData(USART1));      //接收到的数据重新发送到串口   
 	}
 	OSIntExit(); 
