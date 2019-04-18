@@ -176,7 +176,7 @@ void uart_drv_init(void)
     
     //serial init
     //Serial_Init(); 
-    Fifo_Init(&stFiFo);
+    Fifo_Init(&stFiFo1);
     
     for(src = UART_SRC_START; src < UART_SRC_NUM; src++)
     {

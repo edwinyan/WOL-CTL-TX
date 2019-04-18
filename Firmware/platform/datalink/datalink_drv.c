@@ -32,7 +32,7 @@ void datalink_recv(void)
 	u8 read;
 	//static u8 buzzer_count=0;
 	//u8 i=0;
-	
+#if 0	
 	if(Fifo_DataLen(&stFiFo))
 	{
 		//	data_len = Fifo_DataLen(&stFiFo);
@@ -66,6 +66,9 @@ void datalink_recv(void)
 			}
 		}
 	}
+	#else
+
+	#endif
 }
 
 u8 getLB2Values(u8 state)
